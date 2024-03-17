@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatApp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.3/socket.io.min.js"></script>
+</head>
+<body>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var socketio = io.connect("http://192.168.0.110:5000")
+            socketio.on('connect', function(){
+                socketio.send("User connected!");
+            });
+            socketio.on('message', function(data){
+                $('#message').append($('<p>').text(data));
+            });
+            $('#send').on('click', function(){
+                socketio.send($('#username').val()+': '+$('#mess').val());
+                $('#mess').val('');
+            });
+        })
+    </script>
+<div id="message">
+
+</div>
+<input type="text" id="username" placeholder="Username" required>
+<input type="text" id="mess" placeholder="Message" required>
+<button id="send">Send</button>
+</body>
+</html>

@@ -1,8 +1,12 @@
 from flask import *  
 app = Flask(__name__)  
   
-@app.route('/table/<int:num>')  
-def table(num):  
-      return render_template('print-table.html',n=num)  
+@app.route('/login',methods = ['GET'])  
+def login():  
+      uname=request.form['uname']  
+      passwrd=request.form['pass']  
+      if uname=="ayush" and passwrd=="google":  
+          return "Welcome %s" %uname  
+   
 if __name__ == '__main__':  
-   app.run(debug = True) 
+   app.run(debug = True)  
