@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+</head>
+<body>
+    <div id="chat-box"></div>
+    <input type="text" id="username-input" placeholder="Username">
+    <input type="text" id="message-input" placeholder="Message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function getMessages() {
+            fetch('/get_messages')
+                .then(response => response.json())
+                .then(data => {
+                    const messages = data.messages;
+                    const chatBox = document.getElementById('chat-box');
+                    chatBox.innerHTML = messages.map(msg => `<p>${msg}</p>`).join('');
+                });
+        }
+
+        function sendMessage() {
+            const usernameInput = document.getElementById('username-input');
+            const messageInput = document.getElementById('message-input');
+            const username = usernameInput.value;
+            const message = messageInput.value;
+            const mess = username +" : "+message;
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({message: mess})
+            })
+            .then(response => response.json())
+            .then(data => {
+                getMessages();
+                messageInput.value = '';
+            });
+        }
+
+        // Fetch messages when page loads
+        getMessages();
+    </script>
+</body>
+</html>
