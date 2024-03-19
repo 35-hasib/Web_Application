@@ -9,7 +9,7 @@
 <body>
     <script type="text/javascript">
         $(document).ready(function(){
-            var socketio = io.connect("http://192.168.0.110:5000")
+            var socketio = io.connect("http://localhost:5000")
             socketio.on('connect', function(){
                 socketio.send("User connected!");
             });
