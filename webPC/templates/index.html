@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>File Manager</h1>
+
+    <input type="file" id="file-input">
+    <button onclick="uploadFile()">Upload</button>
+
+    <ul id="file-list"></ul>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                listFiles();
+            });
+        }
+
+        function listFiles() {
+            fetch('/files')
+            .then(response => response.json())
+            .then(data => {
+                const fileList = data.files;
+                const fileListElement = document.getElementById('file-list');
+                fileListElement.innerHTML = '';
+                fileList.forEach(filename => {
+                    const li = document.createElement('li');
+                    li.textContent = filename;
+                    const downloadButton = document.createElement('button');
+                    downloadButton.textContent = 'Download';
+                    downloadButton.onclick = () => {
+                        window.location = '/download/' + filename;
+                    };
+                    li.appendChild(downloadButton);
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.onclick = () => {
+                        deleteFile(filename);
+                    };
+                    li.appendChild(deleteButton);
+                    fileListElement.appendChild(li);
+                });
+            });
+        }
+
+        function deleteFile(filename) {
+            fetch('/delete/' + filename, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                listFiles();
+            });
+        }
+
+        // Fetch file list when page loads
+        listFiles();
+    </script>
+</body>
+</html>
